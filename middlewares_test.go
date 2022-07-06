@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
+	"github.com/go-playground/assert/v2"
 	"net/http"
 	"testing"
 )
@@ -15,17 +15,17 @@ func TestAuth_CookieAuthRequired(t *testing.T) {
 	})
 
 	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusOK, w.Code, "expected request to return StatusOK")
+	assert.Equal(t, http.StatusOK, w.Code)
 
 	a.Password = HashPassword("test")
 	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusUnauthorized, w.Code, "expected request to return StatusUnauthorized")
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 
 	token := a.createJWT(shortJwtExpiry)
 	w = PerformRequest(router, "GET", "/test",
 		keyValueInterface{"Cookie", sessionCookieName + "=" + token},
 	)
-	assert.Equal(t, http.StatusOK, w.Code, "expected request to return StatusOK")
+	assert.Equal(t, http.StatusOK, w.Code)
 	a.Password = [32]byte{}
 }
 
@@ -37,11 +37,11 @@ func TestAuth_TokenParamAuth(t *testing.T) {
 	})
 
 	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusOK, w.Code, "expected request to return StatusOK")
+	assert.Equal(t, http.StatusOK, w.Code)
 
 	a.Password = HashPassword("test")
 	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusUnauthorized, w.Code, "expected request to return StatusUnauthorized")
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	a.Password = [32]byte{}
 }
 
@@ -53,16 +53,16 @@ func TestAuth_TokenHeaderAuth(t *testing.T) {
 	})
 
 	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusOK, w.Code, "expected request to return StatusOK")
+	assert.Equal(t, http.StatusOK, w.Code)
 
 	a.Password = HashPassword("test")
 	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusUnauthorized, w.Code, "expected request to return StatusUnauthorized")
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 
 	token := a.createJWT(shortJwtExpiry)
 	w = PerformRequest(router, "GET", "/test",
 		keyValueInterface{authHeader, token},
 	)
-	assert.Equal(t, http.StatusOK, w.Code, "expected request to return StatusOK")
+	assert.Equal(t, http.StatusOK, w.Code)
 	a.Password = [32]byte{}
 }
