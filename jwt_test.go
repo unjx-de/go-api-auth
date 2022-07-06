@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
@@ -8,27 +9,19 @@ import (
 func TestAuth_CreateAndValidateJWT(t *testing.T) {
 	token := a.createJWT(shortJwtExpiry)
 	err := a.validateJWT(token)
-	if err != nil {
-		t.Errorf("%v\n", err)
-	}
+	assert.Equal(t, nil, err, "expected token to be valid")
 }
 
 func TestAuth_CreateAndValidateJWTAfterExpiry(t *testing.T) {
 	token := a.createJWT(shortJwtExpiry)
 	time.Sleep(shortJwtExpiry)
 	err := a.validateJWT(token)
-	if err.Error() != "Token is expired" {
-		t.Errorf("expected token expiration\n")
-	}
+	assert.Equal(t, "Token is expired", err.Error(), "expected token to be expired")
 }
 
 func TestAuth_InvalidJWT(t *testing.T) {
-	err := a.validateJWT("test")
-	if err.Error() != "token contains an invalid number of segments" {
-		t.Errorf("expected invalid token\n")
-	}
-	err = a.validateJWT("")
-	if err.Error() != "token contains an invalid number of segments" {
-		t.Errorf("expected invalid token\n")
-	}
+	err := a.validateJWT("")
+	assert.NotEqual(t, nil, err, "expected token to be invalid")
+	err = a.validateJWT("test")
+	assert.NotEqual(t, nil, err, "expected token to be invalid")
 }
