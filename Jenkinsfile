@@ -7,10 +7,19 @@ pipeline {
         GOPATH = "${WORKSPACE}/go"
     }
     stages {
-        stage('Test') {
+        stage('Prepare') {
             steps {
                 sh 'go mod download'
-                sh 'go test -cover'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'go test -v | /home/flohoss/go-junit-report > report.xml'
+            }
+        }
+        stage('Integration') {
+            steps {
+                junit 'report.xml'
             }
         }
     }
