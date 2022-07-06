@@ -3,6 +3,9 @@ pipeline {
     tools {
         go 'go-1.18'
     }
+    environment {
+        GOPATH = "${WORKSPACE}/go"
+    }
     stages {
         stage('Test') {
             steps {
