@@ -16,18 +16,7 @@ func (a *Auth) CookieAuthRequired() gin.HandlerFunc {
 	}
 }
 
-func (a *Auth) TokenParamAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if a.NoPasswordSet() || a.TokenAuthIsValid(c) {
-			c.Next()
-		} else {
-			c.Status(http.StatusUnauthorized)
-			c.Abort()
-		}
-	}
-}
-
-func (a *Auth) TokenHeaderAuth() gin.HandlerFunc {
+func (a *Auth) HeaderAuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if a.NoPasswordSet() || a.HeaderAuthIsValid(c) {
 			c.Next()

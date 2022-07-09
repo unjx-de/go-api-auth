@@ -5,12 +5,6 @@ import (
 	"testing"
 )
 
-func TestAuth_GetShortSessionToken(t *testing.T) {
-	token := a.GetShortSessionToken()
-	err := a.validateJWT(token)
-	assert.Equal(t, nil, err)
-}
-
 func TestAuth_NoPasswordSet(t *testing.T) {
 	a.Password = HashPassword("test")
 	ret := a.NoPasswordSet()

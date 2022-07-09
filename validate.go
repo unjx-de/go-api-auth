@@ -24,11 +24,3 @@ func (a *Auth) HeaderAuthIsValid(c *gin.Context) bool {
 	}
 	return a.validateJWT(token) == nil
 }
-
-func (a *Auth) TokenAuthIsValid(c *gin.Context) bool {
-	token := c.Param(paramName)
-	if token == "" {
-		return false
-	}
-	return a.validateJWT(token) == nil
-}

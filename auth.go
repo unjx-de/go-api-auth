@@ -7,17 +7,15 @@ import (
 )
 
 type Auth struct {
-	Password [32]byte `mapstructure:"PASSWORD"`
-	Secret   []byte   `mapstructure:"SECRET"`
+	Password [32]byte
+	Secret   []byte
 }
 
 const (
-	shortJwtExpiry    = 2 * time.Second
-	longJwtExpiry     = 30 * 24 * time.Hour
+	JwtExpiry         = 30 * 24 * time.Hour
 	sessionCookieName = "session"
 	secretLength      = 40
 	authHeader        = "Authorization"
-	paramName         = "token"
 	bearerPrefix      = "Bearer "
 )
 
@@ -29,10 +27,6 @@ func SecretGenerator() []byte {
 
 func HashPassword(password string) [32]byte {
 	return sha256.Sum256([]byte(password))
-}
-
-func (a *Auth) GetShortSessionToken() string {
-	return a.createJWT(shortJwtExpiry)
 }
 
 func (a *Auth) NoPasswordSet() bool {

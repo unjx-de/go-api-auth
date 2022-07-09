@@ -5,6 +5,7 @@ import (
 	"github.com/go-playground/assert/v2"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func TestAuth_CookieAuthRequired(t *testing.T) {
@@ -21,7 +22,7 @@ func TestAuth_CookieAuthRequired(t *testing.T) {
 	w = PerformRequest(router, "GET", "/test")
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 
-	token := a.createJWT(shortJwtExpiry)
+	token := a.createJWT(1 * time.Second)
 	w = PerformRequest(router, "GET", "/test",
 		keyValueInterface{"Cookie", sessionCookieName + "=" + token},
 	)
@@ -29,25 +30,9 @@ func TestAuth_CookieAuthRequired(t *testing.T) {
 	a.Password = [32]byte{}
 }
 
-func TestAuth_TokenParamAuth(t *testing.T) {
-	router := gin.New()
-	router.Use(a.TokenParamAuth())
-	router.GET("/test", func(c *gin.Context) {
-		c.Status(200)
-	})
-
-	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusOK, w.Code)
-
-	a.Password = HashPassword("test")
-	w = PerformRequest(router, "GET", "/test")
-	assert.Equal(t, http.StatusUnauthorized, w.Code)
-	a.Password = [32]byte{}
-}
-
 func TestAuth_TokenHeaderAuth(t *testing.T) {
 	router := gin.New()
-	router.Use(a.TokenHeaderAuth())
+	router.Use(a.HeaderAuthRequired())
 	router.GET("/test", func(c *gin.Context) {
 		c.Status(200)
 	})
@@ -59,7 +44,7 @@ func TestAuth_TokenHeaderAuth(t *testing.T) {
 	w = PerformRequest(router, "GET", "/test")
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 
-	token := a.createJWT(shortJwtExpiry)
+	token := a.createJWT(1 * time.Second)
 	w = PerformRequest(router, "GET", "/test",
 		keyValueInterface{authHeader, token},
 	)

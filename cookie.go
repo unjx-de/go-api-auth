@@ -8,7 +8,7 @@ import (
 
 func (a *Auth) SetSessionCookie(c *gin.Context) {
 	c.SetSameSite(http.SameSiteStrictMode)
-	c.SetCookie(sessionCookieName, a.createJWT(longJwtExpiry), int(longJwtExpiry.Seconds()), "/", strings.Split(c.Request.Host, ":")[0], true, true)
+	c.SetCookie(sessionCookieName, a.createJWT(JwtExpiry), int(JwtExpiry.Seconds()), "/", strings.Split(c.Request.Host, ":")[0], true, true)
 }
 
 func (a *Auth) DeleteSessionCookie(c *gin.Context) {

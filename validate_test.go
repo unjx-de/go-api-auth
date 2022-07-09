@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 )
 
 func TestAuth_PasswordEquals(t *testing.T) {
@@ -27,32 +27,9 @@ func TestAuth_HeaderAuthIsValid(t *testing.T) {
 	ret = a.HeaderAuthIsValid(c)
 	assert.Equal(t, false, ret)
 
-	token := a.createJWT(shortJwtExpiry)
+	token := a.createJWT(1 * time.Second)
 	req.Header.Set(authHeader, token)
 	ret = a.HeaderAuthIsValid(c)
-	assert.Equal(t, true, ret)
-}
-
-func TestAuth_TokenAuthIsValid(t *testing.T) {
-	req := &http.Request{URL: &url.URL{}}
-	c.Request = req
-
-	ret := a.TokenAuthIsValid(c)
-	assert.Equal(t, false, ret)
-
-	c.Params = []gin.Param{{
-		Key:   paramName,
-		Value: "test",
-	}}
-	ret = a.TokenAuthIsValid(c)
-	assert.Equal(t, false, ret)
-
-	token := a.createJWT(shortJwtExpiry)
-	c.Params = []gin.Param{{
-		Key:   paramName,
-		Value: token,
-	}}
-	ret = a.TokenAuthIsValid(c)
 	assert.Equal(t, true, ret)
 }
 
@@ -67,7 +44,7 @@ func TestAuth_CookieAuthIsValid(t *testing.T) {
 	ret = a.CookieAuthIsValid(c)
 	assert.Equal(t, false, ret)
 
-	token := a.createJWT(shortJwtExpiry)
+	token := a.createJWT(1 * time.Second)
 	req.Header.Set("Cookie", sessionCookieName+"="+token)
 	ret = a.CookieAuthIsValid(c)
 	assert.Equal(t, true, ret)

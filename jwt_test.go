@@ -7,14 +7,14 @@ import (
 )
 
 func TestAuth_CreateAndValidateJWT(t *testing.T) {
-	token := a.createJWT(shortJwtExpiry)
+	token := a.createJWT(1 * time.Second)
 	err := a.validateJWT(token)
 	assert.Equal(t, nil, err)
 }
 
 func TestAuth_CreateAndValidateJWTAfterExpiry(t *testing.T) {
-	token := a.createJWT(shortJwtExpiry)
-	time.Sleep(shortJwtExpiry)
+	token := a.createJWT(1 * time.Second)
+	time.Sleep(1 * time.Second)
 	err := a.validateJWT(token)
 	assert.Equal(t, "Token is expired", err.Error())
 }
